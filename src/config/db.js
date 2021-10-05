@@ -7,7 +7,7 @@ const db = mysql.createConnection({
   host: 'localhost',
   user: dbUsername,
   password: dbPassword,
-  database: 'db_telegram',
+  database: 'telegram',
 });
 
 // unutk mengecek koneksi
