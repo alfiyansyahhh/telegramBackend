@@ -76,9 +76,9 @@ const userModels = {
         }
       });
   }),
-  update: (body, id, hashpassword, filename) => new Promise((resolve, reject) => {
+  update: (body, id, filename) => new Promise((resolve, reject) => {
     db.query(
-      `update users set  username='${body.username}',password='${hashpassword}',picture='${filename}',
+      `update users set username='${body.username}',picture='${filename}',
       email='${body.email}',phone_number='${body.phone_number}'
       where id='${id}'`, (err, result) => {
         if (err) {

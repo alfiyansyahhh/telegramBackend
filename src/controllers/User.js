@@ -11,7 +11,7 @@ const users = {
       const payload2 = {
         username: body.username,
         email: body.email,
-        paddword: body.password,
+        password: body.password,
         picture: 'images.jpg',
         phone_number: body.phone_number,
       };
@@ -135,17 +135,10 @@ const users = {
       const { id } = req.params;
       const { body } = req;
       const { filename } = req.file;
-      bcrypt.hash(body.password, 10, (errb, hash) => {
-        // Store hash in your password DB.
-        if (errb) {
-          failed(res, 401, errb);
-        } else {
-          usersModel.update(body, id, hash, filename).then((result) => {
-            success(res, result, 'succes');
-          }).catch((err) => {
-            failed(res, 500, err);
-          });
-        }
+      usersModel.update(body, id, filename).then((result) => {
+        success(res, result, 'succes');
+      }).catch((err) => {
+        failed(res, 500, err);
       });
     } catch (error) {
       failed(res, 401, error);
