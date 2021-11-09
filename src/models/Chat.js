@@ -1,6 +1,6 @@
 const db = require('../config/db');
 
-const Chats = {
+const chatsModels = {
   insertChats: (sender, receiver, msg) => new Promise((resolve, reject) => {
     db.query(`INSERT INTO chat (sender,receiver,message) VALUE (
             '${sender}', '${receiver}','${msg}'
@@ -21,6 +21,15 @@ const Chats = {
       }
     });
   }),
+  deleteChats: (data) => new Promise((resolve, reject) => {
+    db.query(`delete from chat where id IN (${data})`, (err, result) => {
+      if (err) {
+        reject(err);
+      } else {
+        resolve(result);
+      }
+    });
+  }),
 };
 
-module.exports = Chats;
+module.exports = chatsModels;

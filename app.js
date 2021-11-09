@@ -1,3 +1,5 @@
+/* eslint-disable no-unused-vars */
+/* eslint-disable no-console */
 const bodyParser = require('body-parser');
 const express = require('express');
 const cors = require('cors');
@@ -5,11 +7,13 @@ const http = require('http');
 const { Server } = require('socket.io');
 const chatsModels = require('./src/models/Chat');
 const usersRouter = require('./src/routers/User');
+const chatsRouter = require('./src/routers/Chats');
 
 const app = express();
 app.use(cors());
 app.use(bodyParser.json());
 app.use(usersRouter);
+app.use(chatsRouter);
 app.use(express.static(`${__dirname}/uploads`));
 
 const httpServer = http.createServer(app);
@@ -38,7 +42,6 @@ io.on('connection', (socket) => {
 
   socket.on('get-chat-history', (payload) => {
     const { sender, receiver } = payload;
-    console.log(sender, receiver);
     chatsModels.getChatHistory(sender, receiver).then((result) => {
       console.log(result);
       io.to(sender).emit('get-history-chat', result);
@@ -54,6 +57,23 @@ io.on('connection', (socket) => {
       chatsModels.insertChats(sender, receiver, msg).then((result) => {
         console.log(result);
         io.to(receiver).emit('get-message-private', payload);
+      }).cath((err) => {
+        console.log(err);
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  });
+  socket.on('delete-message', (payload) => {
+    console.log(payload);
+    const { data, receiver, sender } = payload;
+    try {
+      chatsModels.deleteChats(data).then((result) => {
+        chatsModels.getChatHistory(sender, receiver).then((result2) => {
+          io.to(receiver, sender).emit('get-delete-message', result2);
+        }).catch((err) => {
+          console.log(err);
+        });
       }).cath((err) => {
         console.log(err);
       });
